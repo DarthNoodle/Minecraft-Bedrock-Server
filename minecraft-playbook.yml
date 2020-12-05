@@ -1,0 +1,16 @@
+---
+
+- hosts: minecraft-servers
+  vars_prompt:
+    - name: "ansible_ssh_pass"
+      prompt: "SSH Password"
+      private: yes   
+  vars:
+    - ansible_ssh_user: user
+    - ansible_become_pass: "{{ansible_ssh_pass}}"
+    - ansible_password: "{{ansible_ssh_pass}}"
+  become: true
+  roles:
+    - "{{playbook_dir}}/roles/00-base"
+    - "{{playbook_dir}}/roles/01-docker"
+    - "{{playbook_dir}}/roles/02-minecraft.bedrock"

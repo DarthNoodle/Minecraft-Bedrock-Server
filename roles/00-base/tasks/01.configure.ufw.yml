@@ -1,0 +1,14 @@
+---
+
+- name: Permit SSH
+  ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+- name: Enable UFW & Reject Incoming
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+

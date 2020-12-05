@@ -1,0 +1,26 @@
+---
+
+- name: "Create Folders"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - "{{ DOCKER_ROOT_PATH }}"
+    - "{{ DOCKER_VOLUME_PATH }}"
+    - "{{ TRAEFIK_DOCKER_VOLUME_PATH }}"
+    - "{{ MINECRAFT_DOCKER_VOLUME_PATH }}"
+    - "{{ TRAEFIK_CONFIG_PATH }}"
+    - "{{ MINECRAFT_DATA_PATH }}"
+    - "{{ MINECRAFT_WORLD_PATH }}"
+    - "{{ MINECRAFT_CONFIG_PATH }}"
+
+- name: Copy 'Docker Compose' File Over
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ DOCKER_COMPOSE_LOCATION }}"
+
+
+- name: Spin Up Docker Images
+  docker_compose:
+    project_src: "{{ DOCKER_COMPOSE_LOCATION }}"

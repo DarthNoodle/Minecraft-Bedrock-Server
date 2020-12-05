@@ -1,0 +1,7 @@
+---
+
+- name: "[FW] Permit Minecraft Port on 19132/udp"
+  ufw:
+    rule: allow
+    port: '19132'
+    proto: udp

@@ -1,0 +1,50 @@
+---
+
+- name: Upgrading all packages (Ubuntu/Debian)
+  apt:
+    upgrade: dist
+    update_cache: yes
+  when: ansible_os_family == "Debian" or ansible_os_family == "Ubuntu"
+  
+
+- name: Ensure Core Dumps Are Restricted
+  sysctl:
+    name: fs.suid_dumpable
+    value: 0
+    state: present
+    reload: yes
+
+- name: Ensure Address Space Layout Randomization (ASLR) Is Enabled 
+  sysctl:
+    name: kernel.randomize_va_space
+    value: 2
+    state: present
+    reload: yes
+
+
+- name: Remove Any RC umask
+  lineinfile:
+    dest: /etc/init.d/rc
+    regexp: "^umask (?!027)"
+    state: absent
+
+
+- name: Remove Any Profile umask
+  lineinfile:
+    dest: /etc/profile
+    regexp: "^umask (?!027)"
+    state: absent
+
+
+- name: Set Default Umask To 077
+  lineinfile:
+    regexp: '^UMASK(\s+.*)'
+    line: "UMASK             077"
+    dest: /etc/login.defs
+    state: present
+
+
+- name: Install net-tools
+  apt:
+    name: net-tools
+    state: latest

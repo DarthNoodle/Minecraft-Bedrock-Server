@@ -1,0 +1,3 @@
+---
+- include_tasks: 01.spin.up.containers.yml
+- include_tasks: 02.setup.fw.rules.yml
