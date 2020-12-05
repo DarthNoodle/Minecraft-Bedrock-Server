@@ -34,6 +34,12 @@ minecraft-bedrock:
       - EULA=true
       - VERSION=1.16
       - SERVER_NAME=Bedrock Server
+      - GAMEMODE: creative
+      - DIFFICULTY: hard
+      - ALLOW_CHEATS: "true"
+      - DEFAULT_PLAYER_PERMISSION_LEVEL: operator
+      - VIEW_DISTANCE: 32
+      #  WHITE_LIST: "true"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - {{ MINECRAFT_DATA_PATH }}:/data
