@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+
+local=/{{DOMAIN_FQDN}}/
+address=/minecraft.{{DOMAIN_FQDN}}/{{ ansible_default_ipv4.address }}
+address=/pihole.{{DOMAIN_FQDN}}/{{ ansible_default_ipv4.address }}
+
+# minecraft servers, point them to bedrock connect
+address=/geo.hivebedrock.network/{{ public_ip }}
+address=/hivebedrock.network/{{ public_ip }}
+address=/mco.mineplex.com/{{ public_ip }}
+address=/play.inpvp.net/{{ public_ip }}
+address=/mco.lbsg.net/{{ public_ip }}
+address=/mco.cubecraft.net/{{ public_ip }}
+address=/play.galaxite.net/{{ public_ip }}
+
+

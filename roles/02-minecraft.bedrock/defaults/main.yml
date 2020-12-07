@@ -1,4 +1,20 @@
 ---
+# DNS
+############################################################
+
+
+USE_EXTERNAL_DNS: false #todo: implement
+EXTERNAL_DNS_IP: "8.8.8.8"
+
+DOMAIN_FQDN: mynetwork.local
+DOMAIN_MINECRAFT: "minecraft.{{ DOMAIN_FQDN }}"
+DOMAIN_PIHOLE: "pihole.{{ DOMAIN_FQDN }}"
+
+EXPOSE_PI_HOLE: false   #todo: implement
+PIHOLE_ADMIN_PASSWORD: "password" 
+
+# DOCKER
+############################################################
 
 DOCKER_ROOT_PATH: /opt/minecraft
 DOCKER_COMPOSE_LOCATION: "{{ DOCKER_ROOT_PATH }}/docker-compose.yml"
@@ -8,6 +24,10 @@ DOCKER_COMPOSE_LOCATION: "{{ DOCKER_ROOT_PATH }}/docker-compose.yml"
 DOCKER_VOLUME_PATH: "{{ DOCKER_ROOT_PATH }}/volumes"
 TRAEFIK_DOCKER_VOLUME_PATH: "{{ DOCKER_VOLUME_PATH }}/traefik"
 MINECRAFT_DOCKER_VOLUME_PATH: "{{ DOCKER_VOLUME_PATH }}/minecraft"
+
+PIHOLE_CONFIG_PATH: "{{ DOCKER_VOLUME_PATH }}/pihole"
+PIHOLE_DATA_PATH: "{{ PIHOLE_CONFIG_PATH }}/data"
+PIHOLE_HOSTS_PATH: "{{ PIHOLE_CONFIG_PATH }}/dnsmasq"
 
 TRAEFIK_CONFIG_PATH: "{{ TRAEFIK_DOCKER_VOLUME_PATH }}/traefik.yml"
 

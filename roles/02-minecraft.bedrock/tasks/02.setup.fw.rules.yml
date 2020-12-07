@@ -5,3 +5,9 @@
     rule: allow
     port: '19132'
     proto: udp
+
+- name: "[FW] Permit DNS Port on 53/udp"
+  ufw:
+    rule: allow
+    port: '53'
+    proto: udp

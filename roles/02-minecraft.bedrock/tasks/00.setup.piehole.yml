@@ -1,0 +1,39 @@
+---
+
+- name: "Create Folders"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - "{{ DOCKER_ROOT_PATH }}"
+    - "{{ DOCKER_VOLUME_PATH }}"
+    - "{{ PIHOLE_CONFIG_PATH }}"
+    - "{{ PIHOLE_DATA_PATH }}"
+    - "{{ PIHOLE_HOSTS_PATH }}"
+    
+- name: Gather IPv4 Address Fact, For DNS hosts
+  setup:
+    filter: ansible_default_ipv4.address
+
+#- name: Get Public IP
+- shell: "dig +short myip.opendns.com @resolver1.opendns.com"
+  register: public_ip
+
+
+- name: Generate & Copy 'piehole conf' File Over
+  template:
+    src: pihole.dns.conf.j2
+    dest: "{{ PIHOLE_HOSTS_PATH }}/03-lan.conf"
+
+- name: Stop and Disable systemd-resolvd service (needed for pihole)
+  service:
+    name:    systemd-resolved
+    enabled: no
+    state:   stopped
+
+- name: Tell system to point DNS to pihole
+  lineinfile:
+    path: /etc/resolv.conf
+    regexp: '^nameserver 127\.0\.0\.53'
+    line: '^nameserver 127\.0\.0\.1'

@@ -14,6 +14,9 @@
     - "{{ MINECRAFT_DATA_PATH }}"
     - "{{ MINECRAFT_WORLD_PATH }}"
     - "{{ MINECRAFT_CONFIG_PATH }}"
+    - "{{ PIHOLE_CONFIG_PATH }}"
+    - "{{ PIHOLE_DATA_PATH }}"
+    - "{{ PIHOLE_HOSTS_PATH }}"
 
 - name: Copy 'Docker Compose' File Over
   template:

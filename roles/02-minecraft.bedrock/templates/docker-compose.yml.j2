@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-version: '3.1'
+version: '3.3'
 
 services:
    traefik:
@@ -8,6 +8,7 @@ services:
       command: >
        --providers.docker=true
        --entryPoints.minecraft-bedrock.address=:19132/udp
+       --entryPoints.pihole.address=:53/udp
       container_name: traefik
       restart: always
       logging:
@@ -16,13 +17,17 @@ services:
             max-file: "10"
       ports:
        - 19132:19132/udp
+       - 53:53/udp
       volumes:
        - /var/run/docker.sock:/var/run/docker.sock
+       - /etc/timezone:/etc/timezone:ro
 
    minecraft-bedrock:
       image: itzg/minecraft-bedrock-server
       container_name: bedrock
       restart: always
+      depends_on:
+         - "traefik"      
       logging:
          options:
             max-size: "8m"
@@ -46,3 +51,35 @@ services:
        - "traefik.udp.routers.minecraft-bedrock.entrypoints=minecraft-bedrock"
        - "traefik.udp.routers.minecraft-bedrock.service=minecraft-bedrock"
        - "traefik.udp.services.minecraft-bedrock.loadbalancer.server.port=19132"
+   
+   pihole:
+      image: pihole/pihole
+      container_name: pihole
+      restart: always
+      depends_on:
+         - "traefik"
+      volumes:
+         - {{ PIHOLE_DATA_PATH }}:/etc/pihole/
+         - {{ PIHOLE_HOSTS_PATH }}:/etc/dnsmasq.d/
+         - /etc/timezone:/etc/timezone:ro
+      environment:
+         - WEBPASSWORD={{ PIHOLE_ADMIN_PASSWORD }}
+      dns:
+         - 127.0.0.1
+         - {{ EXTERNAL_DNS_IP }}
+      cap_add:
+         - NET_ADMIN
+      labels:
+         - "traefik.enable=true"
+         - "traefik.http.routers.pihole.rule=Host(`{{ DOMAIN_PIHOLE }}`)"
+         - "traefik.http.services.pihole.loadbalancer.server.port=80"
+         - "traefik.docker.network=proxy"
+         - "traefik.udp.routers.piholedns.entrypoints=pihole"
+         - "traefik.udp.routers.piholedns.service=piholedns"
+         - "traefik.udp.services.piholedns.loadbalancer.server.port=53"
+         
+
+
+
+
+
