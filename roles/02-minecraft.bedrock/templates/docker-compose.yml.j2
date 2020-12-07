@@ -3,47 +3,46 @@
 version: '3.1'
 
 services:
+   traefik:
+      image: traefik:2.3
+      command: >
+       --providers.docker=true
+       --entryPoints.minecraft-bedrock.address=:19132/udp
+      container_name: traefik
+      restart: always
+      logging:
+         options:
+            max-size: "8m"
+            max-file: "10"
+      ports:
+       - 19132:19132/udp
+      volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
 
-  traefik:
-    image: traefik:2.3
-    command: >
-      --providers.docker=true
-      --entryPoints.minecraft-bedrock.address=:19132/udp
-    container_name: traefik
-    restart: always
-    logging:
-      options:
-        max-size: "8m"
-        max-file: "10"
-    ports:
-      - 19132:19132/udp
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
-minecraft-bedrock:
-    image: itzg/minecraft-bedrock-server
-    container_name: bedrock
-    restart: always
-    logging:
-      options:
-        max-size: "8m"
-        max-file: "10"
-    stdin_open: true
-    tty: true
-    environment:
-      - EULA=true
-      - VERSION=1.16
-      - SERVER_NAME=Bedrock Server
-      - GAMEMODE: creative
-      - DIFFICULTY: hard
-      - ALLOW_CHEATS: "true"
-      - DEFAULT_PLAYER_PERMISSION_LEVEL: operator
-      - VIEW_DISTANCE: 32
-      #  WHITE_LIST: "true"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - {{ MINECRAFT_DATA_PATH }}:/data
-    labels:
-      - "traefik.udp.routers.minecraft-bedrock.entrypoints=minecraft-bedrock"
-      - "traefik.udp.routers.minecraft-bedrock.service=minecraft-bedrock"
-      - "traefik.udp.services.minecraft-bedrock.loadbalancer.server.port=19132"
+   minecraft-bedrock:
+      image: itzg/minecraft-bedrock-server
+      container_name: bedrock
+      restart: always
+      logging:
+         options:
+            max-size: "8m"
+            max-file: "10"
+      stdin_open: true
+      tty: true
+      environment:
+       - EULA=true
+       - VERSION=LATEST
+       - WHITE_LIST_USERS=D4rthNoodle,EllisTh0m4s
+       - SERVER_NAME=Bedrock Server
+       - GAMEMODE=creative
+       - DIFFICULTY=hard
+       - ALLOW_CHEATS=true
+       - DEFAULT_PLAYER_PERMISSION_LEVEL=operator
+       - VIEW_DISTANCE=32
+      volumes:
+       - /etc/timezone:/etc/timezone:ro
+       - {{ MINECRAFT_DATA_PATH }}:/data
+      labels:
+       - "traefik.udp.routers.minecraft-bedrock.entrypoints=minecraft-bedrock"
+       - "traefik.udp.routers.minecraft-bedrock.service=minecraft-bedrock"
+       - "traefik.udp.services.minecraft-bedrock.loadbalancer.server.port=19132"

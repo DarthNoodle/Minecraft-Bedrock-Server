@@ -23,4 +23,4 @@
 
 - name: Spin Up Docker Images
   docker_compose:
-    project_src: "{{ DOCKER_COMPOSE_LOCATION }}"
+    project_src: "{{ DOCKER_ROOT_PATH }}"

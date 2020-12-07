@@ -1,7 +1,7 @@
 ##################### HOSTS ########################
 
 [minecraft-servers]
-minecraft1 ansible_host=192.168.73.128
+minecraft1 ansible_host=127.0.0.1 ansible_port=65132
 
 
 
